@@ -15,3 +15,13 @@ This repository owns the authority-approved bootstrap translation boundary.
 - Pin every Git dependency to one exact published revision.
 
 This repository is under fast development and constantly breaking.
+
+## Protos estate status
+
+Stack: incorrect-new
+Status: frozen reference
+Role: in-memory naming authority
+
+No new code is accepted here. Do not add Cargo or Nix dependency edges to this repository.
+
+Existing edges may be observed, never extended.
