@@ -1,4 +1,4 @@
-use crate::bootstrap::{SemaBootstrapAuthority, SourcePlacement};
+use crate::bootstrap::{MemoryBootstrapAuthority, SourcePlacement};
 
 const SOURCE: &str = "Interface.{1 0 0}\n[]\n{\n  []\n  []\n  []\n  []\n  [Domain.[All Health.HealthDomain] HealthDomain.[Body]]\n}\n";
 
@@ -11,7 +11,8 @@ fn placement() -> SourcePlacement {
 
 #[test]
 fn source_and_placement_are_the_entire_caller_input_and_replay_does_not_remint() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
     let first = authority
         .authorize(SOURCE, placement())
         .expect("authority mints and seals source-local declarations");
@@ -25,7 +26,8 @@ fn source_and_placement_are_the_entire_caller_input_and_replay_does_not_remint()
 
 #[test]
 fn distinct_sources_receive_private_stages_without_an_atomic_commit() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
     authority
         .authorize(SOURCE, placement())
         .expect("initial private stage");
@@ -36,7 +38,8 @@ fn distinct_sources_receive_private_stages_without_an_atomic_commit() {
 
 #[test]
 fn admitted_domain_shape_resolves_in_type_applications() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
     authority
         .admit_domain_shape("ScopeOf", 1)
         .expect("authority admits a domain shape before authorization");
@@ -50,7 +53,8 @@ fn admitted_domain_shape_resolves_in_type_applications() {
 
 #[test]
 fn domain_shape_without_admission_is_an_unresolved_reference() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
     let source = "Interface.{1 0 0}\n[]\n{[] [] [] [] [DomainScope.ScopeOf<Domain> Domain.[All]]}";
     assert!(
         authority.authorize(source, placement()).is_err(),
@@ -78,8 +82,10 @@ fn consumer_placement() -> SourcePlacement {
 
 #[test]
 fn imports_resolve_against_previously_authorized_sources() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
-    let dependency = "Interface.{1 0 0}\n[]\n{[] [] [] [] [Domain.[All Craft] DomainScopes.Vector<Domain>]}";
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let dependency =
+        "Interface.{1 0 0}\n[]\n{[] [] [] [] [Domain.[All Craft] DomainScopes.Vector<Domain>]}";
     authority
         .authorize(dependency, dependency_placement())
         .expect("authorize the dependency source first");
@@ -94,8 +100,10 @@ fn imports_resolve_against_previously_authorized_sources() {
 
 #[test]
 fn imports_fail_without_prior_authorization_of_the_source() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
-    let consumer = "Interface.{1 0 0}\n[dep/domain.[Domain]]\n{[] [] [] [] [Domains.Vector<Domain>]}";
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let consumer =
+        "Interface.{1 0 0}\n[dep/domain.[Domain]]\n{[] [] [] [] [Domains.Vector<Domain>]}";
     assert!(
         authority.authorize(consumer, consumer_placement()).is_err(),
         "imports must fail when the dependency source was never authorized"
@@ -104,7 +112,8 @@ fn imports_fail_without_prior_authorization_of_the_source() {
 
 #[test]
 fn imports_resolve_only_via_authorization_not_caller_assertion() {
-    let mut authority = SemaBootstrapAuthority::new().expect("authority owns its seed allocation");
+    let mut authority =
+        MemoryBootstrapAuthority::new().expect("authority owns its seed allocation");
     // Admitting a domain shape is not the same as authorizing a source.
     // The shape resolves at ["builtin"], not at the import module path.
     authority

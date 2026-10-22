@@ -39,7 +39,7 @@ fn default_and_explicit_bootstrap_are_the_same_complete_surface() {
             "bootstrap graph omitted {producer}"
         );
     }
-    for forbidden in ["memory-engine ", "signal-sema-translator ", "tokio "] {
+    for forbidden in ["memory-engine ", "signal-memory-translator ", "tokio "] {
         assert!(
             !default.contains(forbidden),
             "bootstrap graph contains rejected runtime owner {forbidden}:\n{default}"
@@ -69,7 +69,7 @@ fn repository_owns_no_runtime_daemon_store_or_wire_surface() {
         "src/runtime.rs",
         "src/store.rs",
         "src/wire.rs",
-        "src/bin/sema-translator-daemon.rs",
+        "src/bin/memory-translator-daemon.rs",
     ] {
         assert!(
             !Path::new(&root).join(deleted).exists(),
@@ -84,7 +84,7 @@ fn bootstrap_has_no_retired_vocabulary_producer() {
         fs::read_to_string(repository_root().join("Cargo.lock")).expect("Cargo.lock is readable");
 
     for rejected in [
-        "signal-sema-translator",
+        "signal-memory-translator",
         "signal-frame",
         "legacy-name-table",
     ] {

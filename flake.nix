@@ -1,5 +1,5 @@
 {
-  description = "sema-translator — authority-approved bootstrap translation";
+  description = "memory-translator — authority-approved bootstrap translation";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -31,7 +31,7 @@
           test = craneLib.cargoTest (commonArguments // {
             inherit cargoArtifacts;
           });
-          sole-bootstrap-surface = pkgs.runCommand "sema-translator-sole-bootstrap-surface" { } ''
+          sole-bootstrap-surface = pkgs.runCommand "memory-translator-sole-bootstrap-surface" { } ''
             test "$(find ${src}/src -maxdepth 1 -type f -name '*.rs' -printf '%f\n' | sort | tr '\n' ' ')" = "bootstrap.rs lib.rs "
             test "$(find ${src}/tests -maxdepth 1 -type f -name '*.rs' -printf '%f\n' | sort | tr '\n' ' ')" = "bootstrap.rs dependency_boundary.rs "
             ! grep -R -E 'mod (authorization|runtime|store|wire)|memory_engine|tokio::|AUTHORITY_ROUTE|DAEMON_BINARY_NAME' ${src}/src
@@ -48,7 +48,7 @@
           });
         };
         devShells.default = pkgs.mkShell {
-          name = "sema-translator";
+          name = "memory-translator";
           packages = [ pkgs.jujutsu toolchain ];
         };
       });

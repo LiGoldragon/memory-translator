@@ -427,7 +427,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
-name = "sema-translator"
+name = "memory-translator"
 version = "0.11.0"
 dependencies = [
  "content-identity 0.6.0 (git+https://github.com/LiGoldragon/content-identity.git?rev=df1d25c7cd9e822ae03255e04ede59a00b78480b)",

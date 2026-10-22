@@ -1,4 +1,4 @@
-//! The Sema-owned bootstrap naming authority.
+//! The Memory-owned bootstrap naming authority.
 //!
 //! A caller supplies only source text and its source placement.  This module
 //! owns every opaque name, canonical-order byte string, receipt, and staged
@@ -13,11 +13,10 @@ use core_ethos::bootstrap::{
     BootstrapNamingAuthorityRequest, BootstrapPriorIdentities, BootstrapPriorSlot,
     BootstrapPriorVocabulary, BootstrapReadError, BootstrapReadPlan, BootstrapReader,
     BootstrapVersionPolicy, BootstrapWriteError, CanonicalIdentityOrder, DeclarationOccurrence,
-    EthosVersion, IdentityDisposition, IdentitySchema, IdentitySchemaCatalog, NamingAssignments,
-    PlannedScope, PreparedBootstrapDraft, PreparedBootstrapTransaction, SchemaRole,
-    MemoryTransactionAssembler,
-    TextualMetadataRecord, TextualMetadataSnapshot, TextualMetadataTransition,
-    TextualProjectionAddress, bootstrap_prior_definitions,
+    EthosVersion, IdentityDisposition, IdentitySchema, IdentitySchemaCatalog,
+    MemoryTransactionAssembler, NamingAssignments, PlannedScope, PreparedBootstrapDraft,
+    PreparedBootstrapTransaction, SchemaRole, TextualMetadataRecord, TextualMetadataSnapshot,
+    TextualMetadataTransition, TextualProjectionAddress, bootstrap_prior_definitions,
 };
 use name_table::{
     EncodedName, FilePlacement, ModulePlacement, NameAssociation, NameView, TextualMetadata,
@@ -55,7 +54,7 @@ impl SourcePlacement {
     }
 }
 
-/// An empty handle to one private Sema bootstrap authority world.
+/// An empty handle to one private Memory bootstrap authority world.
 ///
 /// It mints opaque names with the operating system CSPRNG.  It has no API for
 /// accepting caller-selected names, proofs, receipts, canonical bytes, seats,
@@ -65,7 +64,7 @@ impl SourcePlacement {
 /// may be admitted before authorization through `admit_domain_shape`. The
 /// authority mints and seals those identities; callers supply only a textual
 /// name and arity.
-pub struct SemaBootstrapAuthority {
+pub struct MemoryBootstrapAuthority {
     assembler: MemoryTransactionAssembler,
     grammar: BootstrapGrammarIdentities,
     seed: SeedAuthorityState,
@@ -87,7 +86,7 @@ struct AdmittedDomainShape {
     arity: u16,
 }
 
-impl SemaBootstrapAuthority {
+impl MemoryBootstrapAuthority {
     /// Start a fresh, empty authority world from the identity-free core seed.
     ///
     /// This constructor accepts no identity, proof, receipt, seat, catalog, or
@@ -171,13 +170,13 @@ impl SemaBootstrapAuthority {
         let planning_reader = self.assembler.bootstrap_reader(
             self.grammar.clone(),
             catalog.clone(),
-            SemaNamingAuthority::unconfigured(catalog.metadata().clone()),
+            MemoryNamingAuthority::unconfigured(catalog.metadata().clone()),
         )?;
         // `plan` refuses bundled/generated Streams before this authority has
         // minted any declaration identity or created a staged record.
         let plan = planning_reader.plan(&request.source)?;
         let allocation = self.allocate_for_plan(&plan, &catalog, &request.placement)?;
-        let authority = SemaNamingAuthority::configured(
+        let authority = MemoryNamingAuthority::configured(
             catalog.metadata().clone(),
             allocation.after.clone(),
             allocation.new_canonical_bytes.clone(),
@@ -304,13 +303,13 @@ impl SemaBootstrapAuthority {
 }
 
 /// An opaque, authority-sealed result.  Its receipt and transaction remain
-/// private to Sema until the atomic persistence owner consumes the stage.
+/// private to Memory until the atomic persistence owner consumes the stage.
 #[derive(Clone)]
 pub struct AuthorizedBootstrap {
     canonical_source: String,
     name_view: AuthorityNameView,
-    reader: BootstrapReader<SemaNamingAuthority>,
-    transaction: PreparedBootstrapTransaction<SemaNamingAuthority>,
+    reader: BootstrapReader<MemoryNamingAuthority>,
+    transaction: PreparedBootstrapTransaction<MemoryNamingAuthority>,
 }
 
 impl AuthorizedBootstrap {
@@ -325,12 +324,12 @@ impl AuthorizedBootstrap {
     }
 
     /// Reader that validates this authority-branded prepared transaction.
-    pub fn reader(&self) -> &BootstrapReader<SemaNamingAuthority> {
+    pub fn reader(&self) -> &BootstrapReader<MemoryNamingAuthority> {
         &self.reader
     }
 
-    /// Prepared transaction created and sealed by Sema authority only.
-    pub fn transaction(&self) -> &PreparedBootstrapTransaction<SemaNamingAuthority> {
+    /// Prepared transaction created and sealed by Memory authority only.
+    pub fn transaction(&self) -> &PreparedBootstrapTransaction<MemoryNamingAuthority> {
         &self.transaction
     }
 }
@@ -396,7 +395,7 @@ struct StagedBootstrapChange {
     request: SourceRequest,
     metadata: TextualMetadataSnapshot,
     true_names: BTreeMap<EncodedName, TrueName>,
-    receipt: PreparedBootstrapTransaction<SemaNamingAuthority>,
+    receipt: PreparedBootstrapTransaction<MemoryNamingAuthority>,
 }
 
 impl StagedBootstrapChange {
@@ -599,7 +598,7 @@ impl SeedAuthorityState {
 }
 
 #[derive(Clone)]
-pub struct SemaNamingAuthority {
+pub struct MemoryNamingAuthority {
     before: TextualMetadataSnapshot,
     after: Option<TextualMetadataSnapshot>,
     new_canonical_bytes: BTreeMap<EncodedName, Vec<u8>>,
@@ -613,7 +612,7 @@ pub struct AuthorityProof {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AuthorityReceipt(PreparedBootstrapDraft);
 
-impl SemaNamingAuthority {
+impl MemoryNamingAuthority {
     fn unconfigured(before: TextualMetadataSnapshot) -> Self {
         Self {
             before,
@@ -657,7 +656,7 @@ impl SemaNamingAuthority {
     }
 }
 
-impl BootstrapNamingAuthority for SemaNamingAuthority {
+impl BootstrapNamingAuthority for MemoryNamingAuthority {
     type Proof = AuthorityProof;
     type Receipt = AuthorityReceipt;
 
@@ -743,7 +742,7 @@ fn mint_canonical_bytes(used: &mut BTreeSet<Vec<u8>>) -> Result<Vec<u8>, Bootstr
     }
 }
 
-/// Exact refusal while the Sema authority is planning or staging a source.
+/// Exact refusal while the Memory authority is planning or staging a source.
 #[derive(Debug, thiserror::Error)]
 pub enum BootstrapAssemblyError {
     /// The shared reader could not be configured from authority-owned state.

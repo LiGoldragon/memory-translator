@@ -1,9 +1,9 @@
-# sema-translator
+# memory-translator
 
-Sema-owned bootstrap identity authority for strict Ethos assembly.
+Memory-owned bootstrap identity authority for strict Ethos assembly.
 
-Callers may construct an empty `SemaBootstrapAuthority` handle, then provide
-only source text and `SourcePlacement` to it. Sema privately owns every name,
+Callers may construct an empty `MemoryBootstrapAuthority` handle, then provide
+only source text and `SourcePlacement` to it. Memory privately owns every name,
 proof, receipt, canonical byte string, and state mutation within that handle;
 it mints opaque `EncodedName` values with a CSPRNG, derives the direct
 `TrueName` of every strict declaration value, and stages canonical textual
@@ -20,7 +20,7 @@ engine, actor, database, daemon, store, socket, or wire service.
 
 The public authority surface is:
 
-- `SemaBootstrapAuthority`
+- `MemoryBootstrapAuthority`
 - `SourcePlacement`
 - opaque `AuthorizedBootstrap`
 

@@ -1,6 +1,6 @@
 //! Authority-approved bootstrap translation for strict Ethos assembly.
 //!
-//! Sema-owned bootstrap identity authority for strict Ethos assembly.
+//! Memory-owned bootstrap identity authority for strict Ethos assembly.
 //!
 //! Callers supply source text and source placement only. This crate privately
 //! mints `EncodedName` values, stages canonical textual metadata and receipts,

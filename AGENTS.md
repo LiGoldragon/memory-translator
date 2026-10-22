@@ -1,8 +1,8 @@
-# Sema Translator
+# Memory Translator
 
 This repository owns the authority-approved bootstrap translation boundary.
 
-- Accept only source text and source placement from callers. The Sema
+- Accept only source text and source placement from callers. The Memory
   authority mints all `EncodedName` values privately with a CSPRNG.
 - Keep `TextualName` metadata outside strict identities. The authority alone
   stages the exact metadata transition, receipt, and direct `TrueNamed`
