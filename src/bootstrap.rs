@@ -15,7 +15,7 @@ use core_ethos::bootstrap::{
     BootstrapVersionPolicy, BootstrapWriteError, CanonicalIdentityOrder, DeclarationOccurrence,
     EthosVersion, IdentityDisposition, IdentitySchema, IdentitySchemaCatalog, NamingAssignments,
     PlannedScope, PreparedBootstrapDraft, PreparedBootstrapTransaction, SchemaRole,
-    SemaTransactionAssembler,
+    MemoryTransactionAssembler,
     TextualMetadataRecord, TextualMetadataSnapshot, TextualMetadataTransition,
     TextualProjectionAddress, bootstrap_prior_definitions,
 };
@@ -66,7 +66,7 @@ impl SourcePlacement {
 /// authority mints and seals those identities; callers supply only a textual
 /// name and arity.
 pub struct SemaBootstrapAuthority {
-    assembler: SemaTransactionAssembler,
+    assembler: MemoryTransactionAssembler,
     grammar: BootstrapGrammarIdentities,
     seed: SeedAuthorityState,
     admitted_domain_shapes: Vec<AdmittedDomainShape>,
@@ -96,7 +96,7 @@ impl SemaBootstrapAuthority {
     pub fn new() -> Result<Self, BootstrapAssemblyError> {
         let mut used_names = BTreeSet::new();
         let mut used_canonical_bytes = BTreeSet::new();
-        let assembler = SemaTransactionAssembler::new();
+        let assembler = MemoryTransactionAssembler::new();
         let grammar =
             assembler.bootstrap_grammar(mint_name(&mut used_names)?, mint_name(&mut used_names)?);
         let seed = SeedAuthorityState::mint(&mut used_names, &mut used_canonical_bytes)?;
@@ -460,7 +460,7 @@ impl SeedAuthorityState {
             BootstrapPriorIdentities {
                 interface_kind: named(BootstrapPriorSlot::InterfaceKind),
                 nexus_kind: named(BootstrapPriorSlot::NexusKind),
-                sema_kind: named(BootstrapPriorSlot::SemaKind),
+                memory_kind: named(BootstrapPriorSlot::MemoryKind),
                 input_role: named(BootstrapPriorSlot::InputRole),
                 output_role: named(BootstrapPriorSlot::OutputRole),
                 refusal_role: named(BootstrapPriorSlot::RefusalRole),
@@ -487,7 +487,7 @@ impl SeedAuthorityState {
 
     fn catalog_for(
         &self,
-        assembler: &SemaTransactionAssembler,
+        assembler: &MemoryTransactionAssembler,
         placement: &SourcePlacement,
         domain_shapes: &[AdmittedDomainShape],
         staged: &BTreeMap<SourceRequest, StagedBootstrapChange>,
@@ -690,7 +690,7 @@ impl Allocation {
     fn assignments_for(
         &self,
         plan: &BootstrapReadPlan,
-        assembler: &SemaTransactionAssembler,
+        assembler: &MemoryTransactionAssembler,
     ) -> Result<NamingAssignments, BootstrapAssemblyError> {
         if self.plan.len() != plan.declarations().len() {
             return Err(BootstrapAssemblyError::PlanChangedDuringAuthorityAssembly);

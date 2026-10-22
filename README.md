@@ -15,7 +15,7 @@ Bundled/generated Stream declarations are refused during planning, before any
 identity allocation or stage is created.
 
 The `bootstrap` feature is both the default and the only surface. Runtime
-execution and persistence belong to `sema-engine`; this repository contains no
+execution and persistence belong to `memory-engine`; this repository contains no
 engine, actor, database, daemon, store, socket, or wire service.
 
 The public authority surface is:

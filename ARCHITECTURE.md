@@ -27,7 +27,7 @@ refusals. The plan occurrence is a local phase join only and never persists.
 `core-ethos` owns planning and prepared bootstrap transaction shapes plus the
 identity-free prior vocabulary seed. `sema-translator` owns allocation,
 metadata, replay, and staging. The later persistence owner performs the atomic
-durable transition; `sema-engine` owns runtime execution.
+durable transition; `memory-engine` owns runtime execution.
 
 The `bootstrap` feature is the default and sole crate surface. There is no
 runtime feature, engine dependency, database, actor, daemon, store, socket, or

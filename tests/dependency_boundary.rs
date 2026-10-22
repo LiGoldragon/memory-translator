@@ -39,7 +39,7 @@ fn default_and_explicit_bootstrap_are_the_same_complete_surface() {
             "bootstrap graph omitted {producer}"
         );
     }
-    for forbidden in ["sema-engine ", "signal-sema-translator ", "tokio "] {
+    for forbidden in ["memory-engine ", "signal-sema-translator ", "tokio "] {
         assert!(
             !default.contains(forbidden),
             "bootstrap graph contains rejected runtime owner {forbidden}:\n{default}"
@@ -55,7 +55,7 @@ fn repository_owns_no_runtime_daemon_store_or_wire_surface() {
     for forbidden in [
         "[[bin]]",
         "runtime =",
-        "sema-engine =",
+        "memory-engine =",
         "signal-frame =",
         "tokio =",
     ] {

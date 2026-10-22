@@ -34,7 +34,7 @@
           sole-bootstrap-surface = pkgs.runCommand "sema-translator-sole-bootstrap-surface" { } ''
             test "$(find ${src}/src -maxdepth 1 -type f -name '*.rs' -printf '%f\n' | sort | tr '\n' ' ')" = "bootstrap.rs lib.rs "
             test "$(find ${src}/tests -maxdepth 1 -type f -name '*.rs' -printf '%f\n' | sort | tr '\n' ' ')" = "bootstrap.rs dependency_boundary.rs "
-            ! grep -R -E 'mod (authorization|runtime|store|wire)|sema_engine|tokio::|AUTHORITY_ROUTE|DAEMON_BINARY_NAME' ${src}/src
+            ! grep -R -E 'mod (authorization|runtime|store|wire)|memory_engine|tokio::|AUTHORITY_ROUTE|DAEMON_BINARY_NAME' ${src}/src
             touch $out
           '';
           doc = craneLib.cargoDoc (commonArguments // {

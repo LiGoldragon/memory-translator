@@ -11,7 +11,7 @@ This repository owns the authority-approved bootstrap translation boundary.
   a compatibility adapter for the retired vocabulary/seat contract.
 - Do not add an engine, actor, database, store, daemon, socket, wire protocol,
   runtime feature, or deployment surface. Runtime execution belongs to
-  `sema-engine`.
+  `memory-engine`.
 - Pin every Git dependency to one exact published revision.
 
 This repository is under fast development and constantly breaking.
